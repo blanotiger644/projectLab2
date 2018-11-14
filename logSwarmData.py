@@ -1,10 +1,7 @@
 import xlwt
 import time
-import logic
 import json
 import requests
-
-main = logic.Field()
 
 style0 = xlwt.easyxf('font: name Arial, color-index black, bold on; align: wrap on, vert centre')
 
@@ -126,16 +123,16 @@ ws.write(77,3,'Nb Holes',style0)
 x=0
 y=1
 newparsed = ''
-while x<5:
-    r = requests.get("http://172.16.0.1:8001/FieldData/GetData", timeout=0.5)
+while x<10:
+    r = requests.get("http://192.168.137.1:8001/FieldData/GetData", timeout=60)
     parsed = json.loads(r.text)
     print(parsed["Ball"]["Object Center"]["X"])
     oldparsed = newparsed
     newparsed = parsed["Ball"]["Object Center"]["X"]
     y=1
     while oldparsed==newparsed:
-        time.sleep(1)
-        r = requests.get("http://172.16.0.1:8001/FieldData/GetData", timeout=0.5)
+        time.sleep(0.5)
+        r = requests.get("http://192.168.137.1:8001/FieldData/GetData", timeout=60)
         parsed = json.loads(r.text)
         print("Data has not changed. ("+str(y)+")")
         oldparsed = newparsed
@@ -221,7 +218,7 @@ while x<5:
     ws.write(76,4+x,parsed["Blue Team Data"]["Triangle"]["Aspect Ratio"],style0)
     ws.write(77,4+x,parsed["Blue Team Data"]["Triangle"]["Nb Holes"],style0)
     #--------------------------------
-    time.sleep(1)
+    time.sleep(0.5)
     x=x+1
 #---------------------------------
 wb.save('SwarmField_Data.xls')
